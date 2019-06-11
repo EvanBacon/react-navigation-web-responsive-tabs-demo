@@ -15,6 +15,7 @@
     "@expo/samples": "~3.0.0",
     "@expo/style-utils": "^1.0.0-alpha.2",
     "@expo/vector-icons": "^10.0.1",
+    "@react-navigation/web": "^1.0.0-alpha.8",
     "expo": "^33.0.0",
     "expo-asset": "^5.0.0",
     "expo-constants": "^5.0.0",

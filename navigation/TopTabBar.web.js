@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import TabBar from './TabBar';
 import CrossFadeIcon from 'react-navigation-tabs/src/views/CrossFadeIcon';
-import { FontAwesome } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Resizable } from '@expo/style-utils';
 
@@ -204,6 +203,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
                   style={{
                     flexDirection: 'row',
                     flex: 1,
+                    minHeight: 72,
                   }}
                 >
                   <AnimatedTouchableOpacity
@@ -236,7 +236,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
                       ],
                     }}
                   >
-                    <FontAwesome color={tintColor} name={'star'} size={32} />
+                    <MaterialIcons color={tintColor} name={'star'} size={32} />
                     {false && (
                       <Text
                         style={{
@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 20,
+    minWidth: 72,
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',

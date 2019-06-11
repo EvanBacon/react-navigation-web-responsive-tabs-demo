@@ -18,11 +18,11 @@ const stackConfig = {
 
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Design: HomeScreen,
   },
   stackConfig,
 );
-
+HomeStack.path = '';
 HomeStack.navigationOptions = {
   tabBarLabel: 'Design',
   tabBarIcon: ({ focused }) => (
@@ -39,11 +39,11 @@ HomeStack.navigationOptions = {
 
 const LinksStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Develop: LinksScreen,
   },
   stackConfig,
 );
-
+LinksStack.path = '';
 LinksStack.navigationOptions = {
   tabBarLabel: 'Develop',
   tabBarIcon: ({ focused }) => (
@@ -56,11 +56,11 @@ LinksStack.navigationOptions = {
 
 const SettingsStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Tools: SettingsScreen,
   },
   stackConfig,
 );
-
+SettingsStack.path = '';
 SettingsStack.navigationOptions = {
   tabBarLabel: 'Tools',
   tabBarIcon: ({ focused }) => (
@@ -73,18 +73,20 @@ SettingsStack.navigationOptions = {
 
 import TabBar from './TopTabBar';
 
+const TabNav = createMaterialTopTabNavigator(
+  {
+    HomeStack,
+    LinksStack,
+    SettingsStack,
+  },
+  {
+    tabBarComponent: TabBar,
+    tabBarOptions: {
+      upperCaseLabel: false,
+    },
+  },
+);
+TabNav.path = '';
 export default createDrawerNavigator({
-  Tabs: createMaterialTopTabNavigator(
-    {
-      HomeDrawer: HomeStack,
-      LinksStack,
-      SettingsStack,
-    },
-    {
-      tabBarComponent: TabBar,
-      tabBarOptions: {
-        upperCaseLabel: false,
-      },
-    },
-  ),
+  TabNav,
 });
