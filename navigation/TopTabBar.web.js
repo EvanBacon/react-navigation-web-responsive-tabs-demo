@@ -1,18 +1,12 @@
 /* @flow */
-
-import * as React from 'react';
-import {
-  Animated,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import TabBar from './TabBar';
-import CrossFadeIcon from 'react-navigation-tabs/src/views/CrossFadeIcon';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Resizable } from '@expo/style-utils';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import * as React from 'react';
+import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import HeaderContainer from './HeaderContainer';
+import TabBar from './TabBar';
+
 export type TabBarOptions = {
   activeTintColor?: string,
   inactiveTintColor?: string,
@@ -42,113 +36,65 @@ type Props = TabBarOptions & {
   jumpTo: (key: string) => any,
 };
 
+const backgroundColor = '#202124';
+
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(
   TouchableOpacity,
 );
 
-export default class TabBarTop extends React.PureComponent<Props> {
-  static defaultProps = {
-    activeTintColor: '#fff',
-    inactiveTintColor: '#fff',
-    showIcon: false,
-    showLabel: true,
-    upperCaseLabel: true,
-    allowFontScaling: true,
-  };
-  state = { height: size };
+function CustomLabel(props) {
+  const {
+    route,
+    position,
+    navigation,
+    activeTintColor,
+    inactiveTintColor,
+    showLabel,
+    upperCaseLabel,
+    labelStyle,
+    allowFontScaling,
+    getLabelText,
+  } = props;
 
-  _renderLabel = ({ route }) => {
-    const {
-      position,
-      navigation,
-      activeTintColor,
-      inactiveTintColor,
-      showLabel,
-      upperCaseLabel,
-      labelStyle,
-      allowFontScaling,
-    } = this.props;
+  if (showLabel === false) {
+    return null;
+  }
 
-    if (showLabel === false) {
-      return null;
-    }
+  const { routes } = navigation.state;
+  const index = routes.indexOf(route);
+  const focused = index === navigation.state.index;
 
-    const { routes } = navigation.state;
-    const index = routes.indexOf(route);
-    const focused = index === navigation.state.index;
+  // Prepend '-1', so there are always at least 2 items in inputRange
+  const inputRange = [-1, ...routes.map((x, i) => i)];
+  const outputRange = inputRange.map(inputIndex =>
+    inputIndex === index ? activeTintColor : inactiveTintColor,
+  );
+  const color = position.interpolate({
+    inputRange,
+    outputRange: outputRange,
+  });
 
-    // Prepend '-1', so there are always at least 2 items in inputRange
-    const inputRange = [-1, ...routes.map((x, i) => i)];
-    const outputRange = inputRange.map(inputIndex =>
-      inputIndex === index ? activeTintColor : inactiveTintColor,
-    );
-    const color = position.interpolate({
-      inputRange,
-      outputRange: outputRange,
-    });
+  const tintColor = focused ? activeTintColor : inactiveTintColor;
+  const label = getLabelText({ route });
 
-    const tintColor = focused ? activeTintColor : inactiveTintColor;
-    const label = this.props.getLabelText({ route });
-
-    if (typeof label === 'string') {
-      return (
-        <Animated.Text
-          style={[styles.label, { color }, labelStyle]}
-          allowFontScaling={allowFontScaling}
-        >
-          {upperCaseLabel ? label.toUpperCase() : label}
-        </Animated.Text>
-      );
-    }
-    if (typeof label === 'function') {
-      return label({ focused, tintColor });
-    }
-
-    return label;
-  };
-
-  _renderIcon = ({ route }) => {
-    const {
-      position,
-      navigation,
-      activeTintColor,
-      inactiveTintColor,
-      renderIcon,
-      showIcon,
-      iconStyle,
-    } = this.props;
-
-    if (showIcon === false) {
-      return null;
-    }
-
-    const index = navigation.state.routes.indexOf(route);
-
-    // Prepend '-1', so there are always at least 2 items in inputRange
-    const inputRange = [-1, ...navigation.state.routes.map((x, i) => i)];
-    const activeOpacity = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(i => (i === index ? 1 : 0)),
-    });
-    const inactiveOpacity = position.interpolate({
-      inputRange,
-      outputRange: inputRange.map(i => (i === index ? 0 : 1)),
-    });
-
+  if (typeof label === 'string') {
     return (
-      <CrossFadeIcon
-        route={route}
-        navigation={navigation}
-        activeOpacity={activeOpacity}
-        inactiveOpacity={inactiveOpacity}
-        activeTintColor={activeTintColor}
-        inactiveTintColor={inactiveTintColor}
-        renderIcon={renderIcon}
-        style={[styles.icon, iconStyle]}
-      />
+      <Animated.Text
+        style={[styles.label, { color }, labelStyle]}
+        allowFontScaling={allowFontScaling}
+      >
+        {upperCaseLabel ? label.toUpperCase() : label}
+      </Animated.Text>
     );
-  };
+  }
+  if (typeof label === 'function') {
+    return label({ focused, tintColor });
+  }
 
+  return label;
+}
+
+class CustomHeader extends React.Component {
   _getAnimatedMenuButtonStyle = () => {
     const activeScale = this.props.position.interpolate({
       inputRange: [0, 1],
@@ -186,9 +132,14 @@ export default class TabBarTop extends React.PureComponent<Props> {
     };
   };
 
-  _renderHeaderLeft = ({ isMobileWidth, children }) => {
-    const backgroundColor = '#202124';
-    const { navigation, ...rest } = this.props;
+  render() {
+    const {
+      navigation,
+      onHeightChanged,
+      children,
+      isMobileWidth,
+      ...rest
+    } = this.props;
     const tintColor = 'white';
 
     return (
@@ -198,7 +149,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
           nativeEvent: {
             layout: { height },
           },
-        }) => this.setState({ height })}
+        }) => onHeightChanged(height)}
       >
         <View
           style={{
@@ -212,7 +163,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
             style={{
               flexDirection: 'row',
               flex: 1,
-              minHeight: 72,
+              minHeight: size,
             }}
           >
             <AnimatedTouchableOpacity
@@ -257,38 +208,50 @@ export default class TabBarTop extends React.PureComponent<Props> {
         {isMobileWidth && children}
       </View>
     );
+  }
+}
+
+export default class TabBarTop extends React.PureComponent<Props> {
+  static defaultProps = {
+    activeTintColor: '#fff',
+    inactiveTintColor: '#fff',
+    showIcon: false,
+    showLabel: true,
+    upperCaseLabel: true,
+    allowFontScaling: true,
+    style: { backgroundColor: backgroundColor, height: '100%' },
   };
+  state = { height: size };
 
-  _renderHeader = ({ width }) => {
-    const backgroundColor = '#202124';
-    const {
-      navigation,
-      style = { backgroundColor: backgroundColor, height: '100%' },
-      ...rest
-    } = this.props;
-
-    return this._renderHeaderLeft({
-      width,
-      isMobileWidth: width < 520,
-      children: (
-        <TabBar
-          {...rest}
-          style={[style, { height: 48 }]}
-          tabStyle={{ paddingHorizontal: 11 }}
-          scrollWrapperStyle={{ height: '100%' }}
-          navigationState={navigation.state}
-          renderIcon={this._renderIcon}
-          renderLabel={this._renderLabel}
-        />
-      ),
-    });
+  _renderLabel = ({ route }) => {
+    return <CustomLabel {...this.props} route={route} />;
   };
 
   render() {
+    const { navigation, style, ...rest } = this.props;
+
     return (
       <View style={{ marginTop: this.state.height }}>
         <HeaderContainer>
-          <Resizable>{({ width }) => this._renderHeader({ width })}</Resizable>
+          <Resizable>
+            {({ width }) => (
+              <CustomHeader
+                {...this.props}
+                onHeightChanged={height => this.setState({ height })}
+                isMobileWidth={width < 520}
+                position={this.props.position}
+              >
+                <TabBar
+                  {...rest}
+                  style={[style, { height: 48 }]}
+                  tabStyle={{ paddingHorizontal: 11 }}
+                  scrollWrapperStyle={{ height: '100%' }}
+                  navigationState={navigation.state}
+                  renderLabel={this._renderLabel}
+                />
+              </CustomHeader>
+            )}
+          </Resizable>
         </HeaderContainer>
       </View>
     );
@@ -296,6 +259,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
 }
 
 const size = 72;
+
 const styles = StyleSheet.create({
   icon: {
     height: 24,
@@ -309,7 +273,7 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 20,
-    minWidth: 72,
+    minWidth: size,
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
