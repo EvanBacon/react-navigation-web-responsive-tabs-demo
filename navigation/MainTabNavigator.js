@@ -5,11 +5,13 @@ import {
   createBottomTabNavigator,
   createMaterialTopTabNavigator,
   createDrawerNavigator,
+  createSwitchNavigator,
 } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import { SearchScreen, ResultScreen } from '../screens/LinksScreen';
+import SearchScreen from '../screens/SearchScreen';
+import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const stackConfig = {
@@ -25,34 +27,17 @@ const HomeStack = createStackNavigator(
 HomeStack.path = '';
 HomeStack.navigationOptions = {
   tabBarLabel: 'Design',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
 };
 
 const LinksStack = createStackNavigator(
   {
-    Search: SearchScreen,
-    Result: ResultScreen,
+    Develop: LinksScreen,
   },
-  { ...stackConfig, headerMode: 'screen' },
+  stackConfig,
 );
 LinksStack.path = '';
 LinksStack.navigationOptions = {
   tabBarLabel: 'Develop',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
-    />
-  ),
 };
 
 const SettingsStack = createStackNavigator(
@@ -64,12 +49,6 @@ const SettingsStack = createStackNavigator(
 SettingsStack.path = '';
 SettingsStack.navigationOptions = {
   tabBarLabel: 'Tools',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
-    />
-  ),
 };
 
 import TabBar from './TopTabBar';
@@ -88,6 +67,16 @@ const TabNav = createMaterialTopTabNavigator(
   },
 );
 TabNav.path = '';
-export default createDrawerNavigator({
+
+const DrawerNav = createDrawerNavigator({
   TabNav,
 });
+DrawerNav.path = '';
+
+export default createSwitchNavigator(
+  {
+    DrawerNav,
+    Search: SearchScreen,
+  },
+  { headerMode: 'none' },
+);

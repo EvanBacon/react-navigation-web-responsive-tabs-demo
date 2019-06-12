@@ -1,8 +1,8 @@
 import React from 'react';
-import { NativeModules, StyleSheet, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Touchable from 'react-native-platform-touchable';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 @withNavigation
 export default class SearchBar extends React.PureComponent {
@@ -34,6 +34,27 @@ export default class SearchBar extends React.PureComponent {
 
     return (
       <View style={styles.container}>
+        <View
+          style={{
+            width: 72,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Touchable
+            onPress={this.props.onBack}
+            hitSlop={{ top: 15, left: 10, right: 15, bottom: 15 }}
+            style={{ padding: 5 }}
+            background={Touchable.Ripple(this.props.tintColor, true)}
+          >
+            <MaterialIcons
+              name="arrow-back"
+              size={25}
+              color={this.props.tintColor}
+            />
+          </Touchable>
+        </View>
+
         <TextInput
           ref={view => {
             this._textInput = view;
@@ -50,7 +71,11 @@ export default class SearchBar extends React.PureComponent {
           style={[styles.searchInput, searchInputStyle]}
         />
         <View
-          style={{ width: 50, alignItems: 'center', justifyContent: 'center' }}
+          style={{
+            width: 72,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           {this.text ? (
             <Touchable
@@ -59,8 +84,8 @@ export default class SearchBar extends React.PureComponent {
               style={{ padding: 5 }}
               background={Touchable.Ripple(this.props.tintColor, true)}
             >
-              <Ionicons
-                name="md-close"
+              <MaterialIcons
+                name="close"
                 size={25}
                 color={this.props.tintColor}
               />
@@ -72,7 +97,7 @@ export default class SearchBar extends React.PureComponent {
   }
 
   _handleClear = () => {
-    this.setState({ text: '' });
+    this._handleChangeText('');
   };
   _handleChangeText = text => {
     this.setState({ text });
@@ -80,7 +105,6 @@ export default class SearchBar extends React.PureComponent {
   };
 
   _handleSubmit = () => {
-    let { text } = this.state;
     this.props.onSubmit && this.props.onSubmit(this.text);
     this._textInput.blur();
   };
@@ -88,9 +112,16 @@ export default class SearchBar extends React.PureComponent {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flex: 1,
     flexBasis: 'auto',
     flexDirection: 'row',
+    height: 72,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(0,0,0,0.3)',
   },
   searchInput: {
     flex: 1,
@@ -99,5 +130,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     paddingLeft: 5,
     marginRight: 5,
+    ...Platform.select({
+      web: {
+        outlineWidth: 0,
+      },
+      default: {},
+    }),
   },
 });

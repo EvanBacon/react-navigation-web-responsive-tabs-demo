@@ -32,33 +32,28 @@ export default class SearchLayout extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Header
-          backgroundColor={this.props.headerBackgroundColor}
-          tintColor={this.props.headerTintColor}
-          backButton={Platform.OS === 'android'}
-        >
-          <SearchBar
-            text={this.props.text}
-            onChangeQuery={this._handleChangeQuery}
-            onSubmit={this._handleSubmit}
-            placeholderTextColor={this.props.searchInputPlaceholderTextColor}
-            textColor={this.props.searchInputTextColor}
-            selectionColor={this.props.searchInputSelectionColor}
-            underlineColorAndroid={
-              this.props.searchInputUnderlineColorAndroid ||
-              this.props.headerBackgroundColor
-            }
-            tintColor={
-              this.props.searchInputTintColor || this.props.headerTintColor
-            }
-          />
-        </Header>
-
-        {this.props.renderResults
-          ? this.props.renderResults(this.props.text || this.state.q)
-          : this.props.children}
-      </View>
+      <Header
+        backgroundColor={this.props.headerBackgroundColor}
+        tintColor={this.props.headerTintColor}
+        backButton={false}
+      >
+        <SearchBar
+          onBack={this.props.onBack}
+          text={this.props.text}
+          onChangeQuery={this._handleChangeQuery}
+          onSubmit={this._handleSubmit}
+          placeholderTextColor={this.props.searchInputPlaceholderTextColor}
+          textColor={this.props.searchInputTextColor}
+          selectionColor={this.props.searchInputSelectionColor}
+          underlineColorAndroid={
+            this.props.searchInputUnderlineColorAndroid ||
+            this.props.headerBackgroundColor
+          }
+          tintColor={
+            this.props.searchInputTintColor || this.props.headerTintColor
+          }
+        />
+      </Header>
     );
   }
 }

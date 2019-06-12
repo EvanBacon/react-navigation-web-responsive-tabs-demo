@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { withNavigation, HeaderBackButton } from 'react-navigation';
 import { getInset, getStatusBarHeight } from 'react-native-safe-area-view';
+import HeaderContainer from '../../navigation/HeaderContainer';
 // import { isIphoneX } from 'react-native-iphone-x-helper';
 const isIphoneX = () => false;
 // @todo: make this work properly when in landscape
@@ -106,33 +107,43 @@ export default class Header extends React.PureComponent {
     }
 
     return (
-      <HeaderBackButton
-        onPress={this._navigateBack}
-        pressColorAndroid={this.props.tintColor || '#fff'}
-        tintColor={this.props.tintColor}
-        title={this.props.backButtonTitle || null}
-        truncatedTitle={this.props.backButtonTruncatedTitle || null}
-        titleStyle={this.props.backButtonTitleStyle || null}
-      />
+      <View style={{ width: 72, height: 72 }}>
+        <HeaderBackButton
+          onPress={this._navigateBack}
+          pressColorAndroid={this.props.tintColor || '#fff'}
+          tintColor={this.props.tintColor}
+          title={this.props.backButtonTitle || null}
+          truncatedTitle={this.props.backButtonTruncatedTitle || null}
+          titleStyle={this.props.backButtonTitleStyle || null}
+        />
+      </View>
     );
   };
 
   render() {
-    let { styles } = this;
     let headerStyle = {};
     if (this.props.backgroundColor) {
       headerStyle.backgroundColor = this.props.backgroundColor;
     }
 
     return (
-      <Animated.View style={[styles.container, headerStyle]}>
-        <View style={styles.appBar}>
-          <View style={[StyleSheet.absoluteFill, styles.header]}>
-            {this._maybeRenderBackButton()}
-            {this.props.children}
-          </View>
-        </View>
-      </Animated.View>
+      <HeaderContainer>
+        <Animated.View style={[styles.container, headerStyle]}>
+          {this._maybeRenderBackButton()}
+          {this.props.children}
+        </Animated.View>
+      </HeaderContainer>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    left: 0,
+    height: 72,
+    flexDirection: 'row',
+  },
+});
