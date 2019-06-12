@@ -183,7 +183,7 @@ class CustomHeader extends React.Component {
               <MaterialIcons color={tintColor} name={'menu'} size={24} />
             </AnimatedTouchableOpacity>
 
-            <Animated.View
+            <AnimatedTouchableOpacity
               style={[
                 {
                   flexDirection: 'row',
@@ -192,9 +192,12 @@ class CustomHeader extends React.Component {
                 },
                 this._getAnimatedIconStyle(),
               ]}
+              onPress={() => {
+                navigation.navigate('Design');
+              }}
             >
               <MaterialIcons color={tintColor} name={'star'} size={32} />
-            </Animated.View>
+            </AnimatedTouchableOpacity>
           </View>
 
           {!isMobileWidth && children}
