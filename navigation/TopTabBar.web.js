@@ -149,21 +149,7 @@ export default class TabBarTop extends React.PureComponent<Props> {
     );
   };
 
-  render() {
-    /* eslint-disable no-unused-vars */
-
-    const backgroundColor = '#202124';
-    const {
-      navigation,
-      renderIcon,
-      getLabelText,
-      style = { backgroundColor: backgroundColor, height: '100%' },
-      ...rest
-    } = this.props;
-    const tintColor = 'white';
-
-    console.log(this.props.navigation);
-
+  _getAnimatedMenuButtonStyle = () => {
     const activeScale = this.props.position.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0.001],
@@ -174,6 +160,13 @@ export default class TabBarTop extends React.PureComponent<Props> {
       outputRange: [1, 0],
       extrapolate: 'clamp',
     });
+    return {
+      opacity: activeOpacity,
+      transform: [{ scale: activeScale }],
+    };
+  };
+
+  _getAnimatedIconStyle = () => {
     const activeTranslationX = this.props.position.interpolate({
       inputRange: [0, 1],
       outputRange: [0, -36],
@@ -185,125 +178,117 @@ export default class TabBarTop extends React.PureComponent<Props> {
       extrapolate: 'clamp',
     });
 
+    return {
+      transform: [
+        { translateX: activeTranslationX },
+        { translateX: activeTranslationXStar },
+      ],
+    };
+  };
+
+  _renderHeaderLeft = ({ isMobileWidth, children }) => {
+    const backgroundColor = '#202124';
+    const { navigation, ...rest } = this.props;
+    const tintColor = 'white';
+
     return (
-      /* $FlowFixMe */
+      <View
+        style={{ position: 'fixed', top: 0, left: 0, right: 0 }}
+        onLayout={({
+          nativeEvent: {
+            layout: { height },
+          },
+        }) => this.setState({ height })}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: backgroundColor,
+            alignItems: 'center',
+          }}
+        >
+          <View
+            pointerEvents="auto"
+            style={{
+              flexDirection: 'row',
+              flex: 1,
+              minHeight: 72,
+            }}
+          >
+            <AnimatedTouchableOpacity
+              style={[
+                styles.buttonTouchable,
+                {
+                  padding: 24,
+                },
+                this._getAnimatedMenuButtonStyle(),
+              ]}
+              onPress={() => {
+                if (navigation.openDrawer) {
+                  navigation.openDrawer();
+                }
+              }}
+            >
+              <MaterialIcons color={tintColor} name={'menu'} size={24} />
+            </AnimatedTouchableOpacity>
+
+            <Animated.View
+              style={[
+                {
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+                this._getAnimatedIconStyle(),
+              ]}
+            >
+              <MaterialIcons color={tintColor} name={'star'} size={32} />
+            </Animated.View>
+          </View>
+
+          {!isMobileWidth && children}
+          <TouchableOpacity
+            style={[styles.buttonTouchable, { marginLeft: 24 }]}
+            onPress={() => this.props.navigation.navigate('Search')}
+          >
+            <MaterialIcons color={tintColor} name={'search'} size={32} />
+          </TouchableOpacity>
+        </View>
+        {isMobileWidth && children}
+      </View>
+    );
+  };
+
+  _renderHeader = ({ width }) => {
+    const backgroundColor = '#202124';
+    const {
+      navigation,
+      style = { backgroundColor: backgroundColor, height: '100%' },
+      ...rest
+    } = this.props;
+
+    return this._renderHeaderLeft({
+      width,
+      isMobileWidth: width < 520,
+      children: (
+        <TabBar
+          {...rest}
+          style={[style, { height: 48 }]}
+          tabStyle={{ paddingHorizontal: 11 }}
+          scrollWrapperStyle={{ height: '100%' }}
+          navigationState={navigation.state}
+          renderIcon={this._renderIcon}
+          renderLabel={this._renderLabel}
+        />
+      ),
+    });
+  };
+
+  render() {
+    return (
       <View style={{ marginTop: this.state.height }}>
         <HeaderContainer>
-          <Resizable>
-            {({ width }) => {
-              const isMed = width < 520;
-              return (
-                <View
-                  style={{ position: 'fixed', top: 0, left: 0, right: 0 }}
-                  onLayout={({
-                    nativeEvent: {
-                      layout: { height },
-                    },
-                  }) => this.setState({ height })}
-                >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      backgroundColor: backgroundColor,
-                      alignItems: 'center',
-                    }}
-                  >
-                    <View
-                      pointerEvents="auto"
-                      style={{
-                        flexDirection: 'row',
-                        flex: 1,
-                        minHeight: 72,
-                      }}
-                    >
-                      <AnimatedTouchableOpacity
-                        style={[
-                          styles.buttonTouchable,
-                          {
-                            padding: 24,
-                            opacity: activeOpacity,
-                            transform: [{ scale: activeScale }],
-                          },
-                        ]}
-                        onPress={() => {
-                          console.log('press');
-                          if (this.props.navigation.openDrawer) {
-                            this.props.navigation.openDrawer();
-                          }
-                        }}
-                      >
-                        <MaterialIcons
-                          color={tintColor}
-                          name={'menu'}
-                          size={24}
-                        />
-                      </AnimatedTouchableOpacity>
-
-                      <Animated.View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          transform: [
-                            { translateX: activeTranslationX },
-                            { translateX: activeTranslationXStar },
-                          ],
-                        }}
-                      >
-                        <MaterialIcons
-                          color={tintColor}
-                          name={'star'}
-                          size={32}
-                        />
-                        {false && (
-                          <Text
-                            style={{
-                              marginLeft: 8,
-                              color: tintColor,
-                              fontWeight: '600',
-                            }}
-                          >
-                            MATERIAL DESIGN {width}
-                          </Text>
-                        )}
-                      </Animated.View>
-                    </View>
-                    {!isMed && (
-                      <TabBar
-                        {...rest}
-                        style={style}
-                        tabStyle={{ paddingHorizontal: 11 }}
-                        scrollWrapperStyle={{ height: '100%' }}
-                        navigationState={navigation.state}
-                        renderIcon={this._renderIcon}
-                        renderLabel={this._renderLabel}
-                      />
-                    )}
-                    <TouchableOpacity
-                      style={[styles.buttonTouchable, { marginLeft: 24 }]}
-                    >
-                      <MaterialIcons
-                        color={tintColor}
-                        name={'search'}
-                        size={32}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {isMed && (
-                    <TabBar
-                      {...rest}
-                      style={[style, { height: 48 }]}
-                      tabStyle={{ paddingHorizontal: 11 }}
-                      scrollWrapperStyle={{ height: '100%' }}
-                      navigationState={navigation.state}
-                      renderIcon={this._renderIcon}
-                      renderLabel={this._renderLabel}
-                    />
-                  )}
-                </View>
-              );
-            }}
-          </Resizable>
+          <Resizable>{({ width }) => this._renderHeader({ width })}</Resizable>
         </HeaderContainer>
       </View>
     );

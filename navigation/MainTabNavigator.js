@@ -9,7 +9,7 @@ import {
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import { SearchScreen, ResultScreen } from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const stackConfig = {
@@ -39,9 +39,10 @@ HomeStack.navigationOptions = {
 
 const LinksStack = createStackNavigator(
   {
-    Develop: LinksScreen,
+    Search: SearchScreen,
+    Result: ResultScreen,
   },
-  stackConfig,
+  { ...stackConfig, headerMode: 'screen' },
 );
 LinksStack.path = '';
 LinksStack.navigationOptions = {
