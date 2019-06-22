@@ -1,18 +1,16 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import {
-  createStackNavigator,
-  createBottomTabNavigator,
-  createMaterialTopTabNavigator,
   createDrawerNavigator,
+  createMaterialTopTabNavigator,
+  createStackNavigator,
   createSwitchNavigator,
 } from 'react-navigation';
 
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import SearchScreen from '../screens/SearchScreen';
 import LinksScreen from '../screens/LinksScreen';
+import SearchScreen from '../screens/SearchScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import CustomTabBar from '../components/CustomTabBar/CustomTabBar';
 
 const stackConfig = {
   headerMode: 'none',
@@ -51,8 +49,6 @@ SettingsStack.navigationOptions = {
   tabBarLabel: 'Tools',
 };
 
-import TabBar from './TopTabBar';
-
 const TabNav = createMaterialTopTabNavigator(
   {
     HomeStack,
@@ -60,7 +56,7 @@ const TabNav = createMaterialTopTabNavigator(
     SettingsStack,
   },
   {
-    tabBarComponent: TabBar,
+    tabBarComponent: CustomTabBar,
     tabBarOptions: {
       upperCaseLabel: false,
     },

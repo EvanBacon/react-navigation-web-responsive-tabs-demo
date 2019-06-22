@@ -12,7 +12,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/samples": "~3.0.0",
+    "@expo/samples": "3.0.1",
     "@expo/style-utils": "^1.0.0-alpha.2",
     "@expo/vector-icons": "^10.0.1",
     "@react-navigation/web": "^1.0.0-alpha.8",
@@ -24,6 +24,7 @@
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native-hooks": "^0.0.6",
     "react-native-web": "^0.11.4",
     "react-navigation": "^3.11.0"
   },
