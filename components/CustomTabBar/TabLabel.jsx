@@ -9,7 +9,6 @@ export default function TabLabel({
   inactiveTintColor = '#fff',
   upperCaseLabel,
   labelStyle,
-  allowFontScaling,
   getLabelText,
 }) {
   const { routes } = navigation.state;
@@ -33,7 +32,7 @@ export default function TabLabel({
     return (
       <Animated.Text
         style={[styles.label, { color }, labelStyle]}
-        allowFontScaling={allowFontScaling}
+        allowFontScaling
       >
         {upperCaseLabel ? label.toUpperCase() : label}
       </Animated.Text>
