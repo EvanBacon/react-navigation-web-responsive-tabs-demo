@@ -11,117 +11,114 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(
 const tintColor = 'white';
 const size = 72;
 
-export default class CustomHeader extends React.Component {
-  _getAnimatedMenuButtonStyle = () => {
-    const activeScale = this.props.position.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0.001],
-      extrapolate: 'clamp',
-    });
-    const activeOpacity = this.props.position.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    return {
-      opacity: activeOpacity,
-      transform: [{ scale: activeScale }],
-    };
+function _getAnimatedMenuButtonStyle(position) {
+  const activeScale = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0.001],
+    extrapolate: 'clamp',
+  });
+  const activeOpacity = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  return {
+    opacity: activeOpacity,
+    transform: [{ scale: activeScale }],
   };
+}
+function _getAnimatedIconStyle(position) {
+  const activeTranslationX = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -36],
+    extrapolate: 'clamp',
+  });
+  const activeTranslationXStar = position.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '-50%'],
+    extrapolate: 'clamp',
+  });
 
-  _getAnimatedIconStyle = () => {
-    const activeTranslationX = this.props.position.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, -36],
-      extrapolate: 'clamp',
-    });
-    const activeTranslationXStar = this.props.position.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0%', '-50%'],
-      extrapolate: 'clamp',
-    });
-
-    return {
-      transform: [
-        { translateX: activeTranslationX },
-        { translateX: activeTranslationXStar },
-      ],
-    };
+  return {
+    transform: [
+      { translateX: activeTranslationX },
+      { translateX: activeTranslationXStar },
+    ],
   };
+}
 
-  render() {
-    const {
-      navigation,
-      onHeightChanged,
-      children,
-      isMobileWidth,
-      ...rest
-    } = this.props;
+export default function CustomHeader(props) {
+  const {
+    navigation,
+    onHeightChanged,
+    children,
+    isMobileWidth,
+    ...rest
+  } = props;
 
-    return (
-      <View
-        style={styles.container}
-        onLayout={({
-          nativeEvent: {
-            layout: { height },
-          },
-        }) => onHeightChanged(height)}
-      >
-        <View style={styles.header}>
-          <View
-            pointerEvents="auto"
-            style={{
-              flexDirection: 'row',
-              flex: 1,
-              minHeight: size,
+  return (
+    <View
+      style={styles.container}
+      onLayout={({
+        nativeEvent: {
+          layout: { height },
+        },
+      }) => onHeightChanged(height)}
+    >
+      <View style={styles.header}>
+        <View
+          pointerEvents="auto"
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            minHeight: size,
+          }}
+        >
+          <AnimatedTouchableOpacity
+            style={[
+              styles.buttonTouchable,
+              {
+                padding: 24,
+              },
+              _getAnimatedMenuButtonStyle(props.position),
+            ]}
+            onPress={() => {
+              if (navigation.openDrawer) {
+                navigation.openDrawer();
+              }
             }}
           >
-            <AnimatedTouchableOpacity
-              style={[
-                styles.buttonTouchable,
-                {
-                  padding: 24,
-                },
-                this._getAnimatedMenuButtonStyle(),
-              ]}
-              onPress={() => {
-                if (navigation.openDrawer) {
-                  navigation.openDrawer();
-                }
-              }}
-            >
-              <MaterialIcons color={tintColor} name={'menu'} size={24} />
-            </AnimatedTouchableOpacity>
+            <MaterialIcons color={tintColor} name={'menu'} size={24} />
+          </AnimatedTouchableOpacity>
 
-            <AnimatedTouchableOpacity
-              style={[
-                {
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                },
-                this._getAnimatedIconStyle(),
-              ]}
-              onPress={() => {
-                navigation.navigate('Design');
-              }}
-            >
-              <MaterialIcons color={tintColor} name={'star'} size={32} />
-            </AnimatedTouchableOpacity>
-          </View>
-
-          {!isMobileWidth && children}
-          <TouchableOpacity
-            style={[styles.buttonTouchable, { marginLeft: 24 }]}
-            onPress={() => this.props.navigation.navigate('Search')}
+          <AnimatedTouchableOpacity
+            style={[
+              {
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+              _getAnimatedIconStyle(props.position),
+            ]}
+            onPress={() => {
+              navigation.navigate('Design');
+            }}
           >
-            <MaterialIcons color={tintColor} name={'search'} size={32} />
-          </TouchableOpacity>
+            <MaterialIcons color={tintColor} name={'star'} size={32} />
+          </AnimatedTouchableOpacity>
         </View>
-        {isMobileWidth && children}
+
+        {!isMobileWidth && children}
+        <TouchableOpacity
+          style={[styles.buttonTouchable, { marginLeft: 24 }]}
+          onPress={() => props.navigation.navigate('Search')}
+        >
+          <MaterialIcons color={tintColor} name={'search'} size={32} />
+        </TouchableOpacity>
       </View>
-    );
-  }
+      {isMobileWidth && children}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
