@@ -57,9 +57,6 @@ const TabNav = createMaterialTopTabNavigator(
   },
   {
     tabBarComponent: CustomTabBar,
-    tabBarOptions: {
-      upperCaseLabel: false,
-    },
   },
 );
 TabNav.path = '';

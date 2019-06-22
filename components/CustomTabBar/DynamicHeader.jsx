@@ -13,8 +13,6 @@ export default function CustomHeader(
   { navigation, onHeightChanged, children, isMobileWidth, position },
   ref,
 ) {
-  const [,] = React.useState(null);
-
   return (
     <View
       style={styles.container}

@@ -26,8 +26,8 @@ function TabBarTop(props) {
             <TabBar
               {...rest}
               style={styles.tabBar}
-              tabStyle={{ paddingHorizontal: 11 }}
-              scrollWrapperStyle={{ height: '100%' }}
+              tabStyle={styles.tabStyle}
+              scrollWrapperStyle={styles.scrollWrapper}
               navigationState={navigation.state}
               renderLabel={({ route }) => <TabLabel {...props} route={route} />}
             />
@@ -50,5 +50,11 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: Colors.header,
     height: 48,
+  },
+  tabStyle: {
+    paddingHorizontal: 11,
+  },
+  scrollWrapper: {
+    height: '100%',
   },
 });
